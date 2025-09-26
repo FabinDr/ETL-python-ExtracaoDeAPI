@@ -11,6 +11,9 @@ import logging
 import logfire
 from logging import basicConfig, getLogger
 
+from flask import Flask
+import threading
+
 # configuração logFire e handler
 logfire_token = os.getenv("LOGFIRE_TOKEN")
 logfire.configure(token=logfire_token)
@@ -32,8 +35,9 @@ POSTGRES_DB = os.getenv("POSTGRES_DB")
 
 DATABASE_URL = (
     f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
-    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?sslmode=require"
+    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 )
+
 
 # Cria o engine e a sessão -> Padrão SQLAlchemy
 engine = create_engine(DATABASE_URL)
