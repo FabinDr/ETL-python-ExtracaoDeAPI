@@ -87,6 +87,27 @@ def salva_dados_postgres(dados):
     finally:
         session.close()
 
+def pipeline_bitcoin():
+    with logfire.span("Executando pipeline ETL Bitcoin"):
+        
+        with logfire.span("Extrair Dados da API Coinbase"):
+            dados_json = extrair_dados_bitcoin()
+        
+        if not dados_json:
+            logger.error("Falha na extração dos dados. Abortando pipeline.")
+            return
+        
+        with logfire.span("Tratar Dados do Bitcoin"):
+            dados_transformados = transforma_dados_bitcoin(dados_json)
+        
+        with logfire.span("Salvar Dados no Postgres"):
+            salva_dados_postgres(dados_transformados)
+
+        # Exemplo de log final com placeholders
+        logger.info(
+            f"Pipeline finalizada com sucesso!"
+        )
+
 # Basicamente, isso so executa o código só se este arquivo for rodado diretamente, e não quando for importado
 if __name__ == "__main__":
     tabela_database()
@@ -94,11 +115,7 @@ if __name__ == "__main__":
 
     while True:
         try:
-            dados_json = extrair_dados_bitcoin()
-            if dados_json:
-                dados_tratados = transforma_dados_bitcoin(dados_json)
-                logger.info("Dados Tratados:", dados_tratados)
-                salva_dados_postgres(dados_tratados)
+            pipeline_bitcoin()
             time.sleep(15)
         except KeyboardInterrupt:
             logger.info("\nProcesso interrompido pelo usuário. Finalizando...")
