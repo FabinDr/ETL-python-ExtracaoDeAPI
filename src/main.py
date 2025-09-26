@@ -32,7 +32,7 @@ POSTGRES_DB = os.getenv("POSTGRES_DB")
 
 DATABASE_URL = (
     f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
-    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?sslmode=require"
 )
 
 # Cria o engine e a sessão -> Padrão SQLAlchemy

@@ -21,7 +21,8 @@ def ler_dados():
             database = POSTGRES_DB,
             user = POSTGRES_USER,
             password = POSTGRES_PASSWORD,
-            port= POSTGRES_PORT
+            port= POSTGRES_PORT,
+            sslmode='require'
         )
         query = 'SELECT * FROM bitcoin_precos ORDER BY timestamp DESC'
         df = pd.read_sql(query, conn)
