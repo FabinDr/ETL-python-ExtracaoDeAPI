@@ -12,8 +12,8 @@ import logfire
 from logging import basicConfig, getLogger
 
 # configuração logFire e handler
-# Temos os logs padrãoes das libs que estamos usando
-logfire.configure()
+logfire_token = os.getenv("LOGFIRE_TOKEN")
+logfire.configure(token=logfire_token)
 basicConfig(handlers=[logfire.LogfireLoggingHandler()])
 logger = getLogger(__name__)
 logger.setLevel(logging.INFO)
