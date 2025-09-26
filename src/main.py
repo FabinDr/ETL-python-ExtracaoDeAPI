@@ -6,11 +6,23 @@ from sqlalchemy import create_engine #cria a tabela
 from sqlalchemy.orm import sessionmaker # cria uma sessão no db
 from dotenv import load_dotenv
 import os
+# Importando o logfire para observabilidade
+import logging
+import logfire
+from logging import basicConfig, getLogger
+
+# configuração logFire e handler
+# Temos os logs padrãoes das libs que estamos usando
+logfire.configure()
+basicConfig(handlers=[logfire.LogfireLoggingHandler()])
+logger = getLogger(__name__)
+logger.setLevel(logging.INFO)
+logfire.instrument_requests()
+logfire.instrument_sqlalchemy()
 
 from database import Base, BitcoinPreco
 
 load_dotenv()
-
 # Carrega variáveis do arquivo .env
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
@@ -30,15 +42,18 @@ Session = sessionmaker(bind=engine)
 # Função para criar uma tabela no banco, se ela não existir
 def tabela_database():
     Base.metadata.create_all(engine)
-    print("A tabela foi criada/verificada com sucesso!")
+    logger.info("A tabela foi criada/verificada com sucesso!")
 
 # modularizando a aplicação
 # Extract
 def extrair_dados_bitcoin():
     url = 'https://api.coinbase.com/v2/prices/spot'
     response = requests.get(url)
-    dados = response.json()
-    return dados
+    if response.status_code == 200:
+        return response.json()
+    else:
+        logger.error(f"Erro na API: {response.status_code}")
+        return None
 
 # Transform
 def transforma_dados_bitcoin(dados):
@@ -65,28 +80,31 @@ def salva_dados_postgres(dados):
         session.add(novo_registro)
         session.commit()
         session.close()
-        print(f'[{dados["timestamp"]}] Os dados foram salvos no PostgreSQL!')
+        logger.info(f'[{dados["timestamp"]}] Os dados foram salvos no PostgreSQL!')
     except Exception as e:
-        print(f"Ocorreu um erro: {e}")
+        logger.error(f"Erro ao inserir dados no PostgreSQL: {e}")
+        session.rollback()
+    finally:
+        session.close()
 
 # Basicamente, isso so executa o código só se este arquivo for rodado diretamente, e não quando for importado
 if __name__ == "__main__":
     tabela_database()
-    print("Iniciando ETL com atualização a cada 15 segundos... (CTRL+C para interromper)")
+    logger.info("Iniciando ETL com atualização a cada 15 segundos... (CTRL+C para interromper)")
 
     while True:
         try:
             dados_json = extrair_dados_bitcoin()
             if dados_json:
                 dados_tratados = transforma_dados_bitcoin(dados_json)
-                print("Dados Tratados:", dados_tratados)
+                logger.info("Dados Tratados:", dados_tratados)
                 salva_dados_postgres(dados_tratados)
             time.sleep(15)
         except KeyboardInterrupt:
-            print("\nProcesso interrompido pelo usuário. Finalizando...")
+            logger.info("\nProcesso interrompido pelo usuário. Finalizando...")
             break
         except Exception as e:
-            print(f"Erro durante a execução: {e}")
+            logger.info(f"Erro durante a execução: {e}")
             time.sleep(15)
 
 
