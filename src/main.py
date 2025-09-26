@@ -11,9 +11,6 @@ import logging
 import logfire
 from logging import basicConfig, getLogger
 
-from flask import Flask
-import threading
-
 # configuração logFire e handler
 logfire_token = os.getenv("LOGFIRE_TOKEN")
 logfire.configure(token=logfire_token)
