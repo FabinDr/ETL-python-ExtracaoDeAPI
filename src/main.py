@@ -48,7 +48,7 @@ def tabela_database():
 # modularizando a aplicação
 # Extract
 def extrair_dados_bitcoin():
-    url = 'https://api.coinbase.com/v2/prices/spot'
+    url = 'https://api.coinbase.com/v2/prices/BTC-USD/spot'
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
