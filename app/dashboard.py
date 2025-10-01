@@ -3,6 +3,7 @@ import psycopg2
 import pandas as pd
 import time
 import os
+import plotly.express as px
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -55,17 +56,28 @@ def main():
         
         st.subheader("📈 Evolução do Preço do Bitcoin")
         st.line_chart(data=df, x='timestamp', y='valor', use_container_width=True)
+        
+        st.subheader("📊 Análise de Distribuição de Preços")
+        
+        fig_hist = px.histogram(
+            df, 
+            x='valor', 
+            nbins=50, 
+            title='Frequência de Preços do Bitcoin'
+        )
+        fig_hist.update_layout(bargap=0.1)
+        st.plotly_chart(fig_hist, use_container_width=True)
+
+        with st.expander("📋 Tabela com os Dados Recentes"):
+            default_cols = list(df)
+            # Limita a exibição para não travar
+            st.dataframe(df)
+            st.caption(f"Mostrando até 1000 de {len(df)} registros.")
+
     else:
         st.warning("Nenhum dado encontrado no banco de dados PostgreSQL.")
-
         st.subheader("Dados Detalhados")
-
-    with st.expander("📋 Tabela com os Dados Recentes"):
-        default_cols = list(df)
-        # Limita a exibição para não travar
-        st.dataframe(df)
-        st.caption(f"Mostrando até 1000 de {len(df)} registros.")
-
+    
 if __name__ == "__main__":
     main()
 
