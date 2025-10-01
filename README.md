@@ -1,5 +1,7 @@
 # ETL de Preços de Bitcoin com Python
 
+> **Nota:** Este projeto foi desenvolvido com base na aula **"Pipeline ETL Python - Extração de API Bitcoin"** da **Jornada de Dados - Luciano Vasconcelos** no YouTube. Você pode conferir o vídeo completo aqui: [Pipeline ETL Python - Extração de API Bitcoin com Agno Agente AI, SQL e Streamlit](http://www.youtube.com/watch?v=Oxy_ivwEoo0). O objetivo é estudo e prática em Engenharia de Dados.
+
 Este projeto implementa um pipeline de ETL (Extração, Transformação e Carga) para extrair dados de preços de Bitcoin da API da Coinbase em tempo real, transformá-los e carregá-los em um banco de dados PostgreSQL.
 
 ## Funcionalidades
@@ -27,7 +29,7 @@ Este projeto implementa um pipeline de ETL (Extração, Transformação e Carga)
 1.  **Clone o repositório:**
 
     ```bash
-    git clone https://github.com/fabindr/etl-python-extracaodeapi.git
+    git clone [https://github.com/fabindr/etl-python-extracaodeapi.git](https://github.com/fabindr/etl-python-extracaodeapi.git)
     ```
 
 2.  **Crie e ative um ambiente virtual:**
@@ -60,6 +62,3 @@ Para iniciar o processo de ETL, execute o seguinte comando no terminal:
 
 ```bash
 python src/main.py
-```
-
-O script criará a tabela `bitcoin_precos` (se não existir) e começará a extrair, transformar e carregar os dados de preços de Bitcoin a cada 15 segundos.
