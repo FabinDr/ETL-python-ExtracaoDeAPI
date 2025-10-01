@@ -58,13 +58,14 @@ def extrair_dados_bitcoin():
 
 # Transform
 def transforma_dados_bitcoin(dados):
+    
     valor = dados['data']["amount"]
-    criptomoeda = dados['data']["currency"]
-    moeda = dados['data']["base"]
+    criptomoeda = dados['data']["base"]
+    moeda = dados['data']["currency"]
     timestamp = datetime.now()
 
     dados_transformados = {
-        'valor':valor,
+        'valor': valor,
         "criptomoeda": criptomoeda,
         'moeda': moeda,
         'timestamp': timestamp
