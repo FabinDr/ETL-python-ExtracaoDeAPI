@@ -7,7 +7,7 @@ from datetime import datetime
 #Cria a classe Base do SQLAlchemy
 Base = declarative_base()
 class BitcoinPreco(Base):
-    """Define a tabela no banco de dados."""
+    #Define a tabela no banco de dados.
     __tablename__ = "bitcoin_precos"
     #Atributos do banco de dados
     id = Column(Integer, primary_key=True, autoincrement=True)

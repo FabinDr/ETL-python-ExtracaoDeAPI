@@ -1,4 +1,3 @@
-#Extraindo a API - Coinbase
 import time
 import requests
 from datetime import datetime
@@ -23,7 +22,6 @@ logfire.instrument_sqlalchemy()
 from database import Base, BitcoinPreco
 
 load_dotenv()
-# Carrega variáveis do arquivo .env
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
@@ -34,7 +32,6 @@ DATABASE_URL = (
     f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
     f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 )
-
 
 # Cria o engine e a sessão -> Padrão SQLAlchemy
 engine = create_engine(DATABASE_URL)
@@ -48,7 +45,7 @@ def tabela_database():
 # modularizando a aplicação
 # Extract
 def extrair_dados_bitcoin():
-    url = 'https://api.coinbase.com/v2/prices/BTC-USD/spot'
+    url = 'https://api.coinbase.com/v2/prices/BTC-USD/spot' #Extraindo a API - Coinbase
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
@@ -110,7 +107,7 @@ def pipeline_bitcoin():
             f"Pipeline finalizada com sucesso!"
         )
 
-# Basicamente, isso so executa o código só se este arquivo for rodado diretamente, e não quando for importado
+# Basicamente, isso so executa o código se este arquivo for rodado diretamente, e não quando for importado.
 if __name__ == "__main__":
     tabela_database()
     logger.info("Iniciando ETL com atualização a cada 15 segundos... (CTRL+C para interromper)")
